@@ -5,7 +5,10 @@ import json
 
 # Fetch
 def consulta_personas(request):
-    return JsonResponse({'res': list(Persona.objects.all().values())})
+    try:
+        return JsonResponse({'res': list(Persona.objects.all().values())})
+    except Exception as e:
+        print(str(e))
 
 def consulta_vehiculos(request):
     return JsonResponse({'res': list(Vehiculo.objects.all().values())})
@@ -17,8 +20,7 @@ def consulta_mantenimiento(request):
 @csrf_exempt
 def crear_persona(request):
     try:
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
+        body = request.POST
 
         Persona.objects.create(
             nombre = body['nombre'],
@@ -35,8 +37,7 @@ def crear_persona(request):
 @csrf_exempt
 def crear_vehiculo(request):
     try:
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
+        body = request.POST
 
         Vehiculo.objects.create(
             dueno = Persona.objects.get(tipo = body['tipo'], cedula = body['cedula']),
@@ -53,8 +54,7 @@ def crear_vehiculo(request):
 @csrf_exempt
 def crear_mantenimiento(request):
     try:
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
+        body = request.POST
 
         Mantenimiento.objects.create(
             vehiculo = Vehiculo.objects.get(placa=body['vehiculo']),
@@ -71,8 +71,7 @@ def crear_mantenimiento(request):
 def modificar_persona(request, pk):
     try:
         persona = Persona.objects.get(pk = pk)
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
+        body = request.POST
 
         persona.nombre = body['nombre']
         persona.apellido = body['apellido']
@@ -88,8 +87,7 @@ def modificar_persona(request, pk):
 def modificar_vehiculo(request, pk):
     try:
         vehiculo = Vehiculo.objects.get(pk = pk)
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
+        body = request.POST
 
         vehiculo.dueno = Persona.objects.get(tipo=body['tipo'],cedula=body['cedula'])
         vehiculo.placa = body['placa']
@@ -107,8 +105,7 @@ def modificar_vehiculo(request, pk):
 def modificar_mantenimiento(request, pk):
     try:
         mantenimiento = Mantenimiento.objects.get(pk = pk)
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
+        body = request.POST
 
         mantenimiento.vehiculo = Vehiculo.objects.get(placa=body['vehiculo'])
         mantenimiento.tipo = body['tipo']
