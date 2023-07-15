@@ -90,7 +90,6 @@ def modificar_vehiculo(request, pk):
         body = request.POST
 
         vehiculo.dueno = Persona.objects.get(tipo=body['tipo'],cedula=body['cedula'])
-        vehiculo.placa = body['placa']
         vehiculo.marca = body['marca']
         vehiculo.modelo = body['modelo']
         vehiculo.color = body['color']
@@ -107,15 +106,19 @@ def modificar_mantenimiento(request, pk):
         mantenimiento = Mantenimiento.objects.get(pk = pk)
         body = request.POST
 
+        print(body['tipo'])
+
         mantenimiento.vehiculo = Vehiculo.objects.get(placa=body['vehiculo'])
         mantenimiento.tipo = body['tipo']
         mantenimiento.estado = body['estado']
-        mantenimiento.resultados = body['resultados']
+        mantenimiento.fecha = body['fecha']
+        mantenimiento.resultados = body.get('resultados')
 
         mantenimiento.save()
 
         return JsonResponse({'res': 200})
     except Exception as e:
+        print(str(e))
         return JsonResponse({'res': 400, 'error': str(e)})
 
 # Eliminar
